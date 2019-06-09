@@ -18,10 +18,10 @@ public class BankUserDaoImpl implements BankUserDao {
     public List<BankUser> getAllUsers() {
         List<BankUser> users = new ArrayList<>();
         try (Connection conn = ConnectionPool.getConnection()) {
-            // Get a statment to the database
+            // Get a statement to the database
             PreparedStatement stmt = conn.prepareCall("SELECT * FROM bank_user");
 
-            // Execute the statment, and get the result set.
+            // Execute the statement, and get the result set.
             ResultSet rs = stmt.executeQuery();
 
             // Iterate over the Result Set and create new Bank Users
@@ -88,12 +88,12 @@ public class BankUserDaoImpl implements BankUserDao {
     }
 
     @Override
-    public Boolean login(BankUser bankUser) {
+    public BankUser login(BankUser bankUser) {
         BankUser user;
         int index = 1;
         try (Connection conn = ConnectionPool.getConnection()) {
             // Prepared our connection with the database
-            PreparedStatement stmt = conn.prepareCall("SELECT COUNT(username) FROM bank_user WHERE username LIKE ? AND password = ?");
+            PreparedStatement stmt = conn.prepareCall("SELECT userid, username, password, email, status FROM bank_user WHERE username = ? AND password = ?");
 
             // Set the appropriate values in the query
             stmt.setString(index++, bankUser.getUsername());
@@ -101,10 +101,8 @@ public class BankUserDaoImpl implements BankUserDao {
 
             ResultSet rs = stmt.executeQuery();
 
-            if (rs != null) {
-                rs.last();
-                int bankUserCount = rs.getInt(1);
-                if (bankUserCount != 1) { return false; }       // A user with the provided credentials does not exist
+            if (rs.next()) {
+                return new BankUser(rs.getInt("userid"), rs.getString("username"), rs.getString("password"), rs.getString("email"), UserStatus.valueOf(rs.getString("status")));
             }
         } catch (SQLException e) {
             System.err.println("SQL State: " + e.getSQLState());
@@ -114,6 +112,6 @@ public class BankUserDaoImpl implements BankUserDao {
             throw new RuntimeException(e.getMessage());
         }
 
-        return true;
+        return null;
     }
 }

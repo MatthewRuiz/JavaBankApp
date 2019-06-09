@@ -3,14 +3,24 @@ package com.revature.model;
 import java.util.Objects;
 
 public class BankTransaction {
+    private int transactionId;
     private String title;
     private float amount;
     private int accountId;
 
-    public BankTransaction(String title, float amount, int accountId) {
+    public BankTransaction(int transactionId, String title, float amount, int accountId) {
+        this.transactionId = transactionId;
         this.title = title;
         this.amount = amount;
         this.accountId = accountId;
+    }
+
+    public int getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
     }
 
     public String getTitle() {
@@ -42,20 +52,22 @@ public class BankTransaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BankTransaction that = (BankTransaction) o;
-        return Float.compare(that.amount, amount) == 0 &&
+        return transactionId == that.transactionId &&
+                Float.compare(that.amount, amount) == 0 &&
                 accountId == that.accountId &&
                 Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, amount, accountId);
+        return Objects.hash(transactionId, title, amount, accountId);
     }
 
     @Override
     public String toString() {
         return "BankTransaction{" +
-                "title='" + title + '\'' +
+                "transactionId=" + transactionId +
+                ", title='" + title + '\'' +
                 ", amount=" + amount +
                 ", accountId=" + accountId +
                 '}';

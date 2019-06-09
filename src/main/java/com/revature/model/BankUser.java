@@ -3,6 +3,7 @@ package com.revature.model;
 import com.revature.UserStatus;
 
 import java.util.Objects;
+import java.util.Scanner;
 
 public class BankUser {
     private int userid;
@@ -105,5 +106,15 @@ public class BankUser {
                 ", email='" + email + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public void readIn() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Please enter your username: ");
+        this.username = scanner.nextLine();
+
+        System.out.print("Please enter your password: ");
+        this.password = scanner.nextLine();
     }
 }

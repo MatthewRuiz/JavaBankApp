@@ -1,6 +1,7 @@
-package com.revature.dao.bankaccount;
+package com.revature.dao.banktransaction;
 
 import com.revature.model.BankAccount;
+import com.revature.model.BankTransaction;
 import com.revature.model.BankUser;
 import com.revature.util.ConnectionPool;
 
@@ -11,26 +12,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BankAccountDaoImpl implements BankAccountDAO {
+public class BankTransactionDaoImpl implements BankTransactionDao {
+
     @Override
-    public List<BankAccount> getAllAccounts(BankUser bankUser) {
-        List<BankAccount> accounts = new ArrayList<>();
+    public List<BankTransaction> getAllTransactions(BankAccount bankAccount) {
+        List<BankTransaction> transactions = new ArrayList<>();
         int index = 1;
         try (Connection conn = ConnectionPool.getConnection()) {
-            // Get a statement to the database
-            PreparedStatement stmt = conn.prepareCall("SELECT * FROM bank_account WHERE userid = ?");
-            stmt.setInt(index++, bankUser.getUserid());
+            // Get a statment to the database
+            PreparedStatement stmt = conn.prepareCall("SELECT * FROM bank_transaction WHERE account_id = ?");
+            stmt.setInt(index++, bankAccount.getAccountId());
 
             // Execute the statement, and get the result set.
             ResultSet rs = stmt.executeQuery();
 
             // Iterate over the Result Set and create new Bank Users
             while (rs.next()) {
-                accounts.add(
-                        new BankAccount(rs.getInt("account_id"),rs.getString("title"), rs.getFloat("balance"), rs.getInt("userid"))
+                transactions.add(
+                        new BankTransaction(rs.getInt("transaction_id"), rs.getString("title"), rs.getFloat("amount"), rs.getInt("account_id"))
                 );
             }
-            return accounts;
+            return transactions;
         } catch (SQLException e) {
             System.err.println("SQL State: " + e.getSQLState());
             System.err.println("Error code: " + e.getErrorCode());
@@ -41,22 +43,17 @@ public class BankAccountDaoImpl implements BankAccountDAO {
     }
 
     @Override
-    public BankAccount getAccountByTitle() {
+    public BankTransaction createTransaction(BankTransaction bankTransaction) {
         return null;
     }
 
     @Override
-    public BankAccount updateAccount(BankAccount bankAccount) {
+    public BankTransaction deleteTransaction(BankTransaction bankTransaction) {
         return null;
     }
 
     @Override
-    public BankAccount deleteAccount(String username) {
-        return null;
-    }
-
-    @Override
-    public BankAccount createAccount(BankAccount bankAccount) {
+    public BankTransaction updateTransaction(BankTransaction bankTransaction) {
         return null;
     }
 }

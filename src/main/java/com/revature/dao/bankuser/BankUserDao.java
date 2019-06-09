@@ -11,5 +11,5 @@ public interface BankUserDao {
     BankUser updateUser(BankUser bankUser);
     BankUser deleteUser(String username);
     BankUser createUser(BankUser bankUser);
-    Boolean login(BankUser bankUser);
+    BankUser login(BankUser bankUser);
 }
